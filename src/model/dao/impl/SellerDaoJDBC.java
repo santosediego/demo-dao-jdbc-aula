@@ -4,7 +4,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import db.DB;
 import db.DbException;
@@ -94,5 +97,55 @@ public class SellerDaoJDBC implements SellerDao{
 	public List<Seller> findAll() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public List<Seller> findByDepartment(Department department) {
+		
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		
+		try {
+			
+			st = conn.prepareStatement(
+					"SELECT seller.*,department.Name as DepName\r\n" + 
+					"FROM seller INNER JOIN department\r\n" + 
+					"ON seller.DepartmentId = department.Id\r\n" + 
+					"WHERE DepartmentId = ?\r\n" + 
+					"ORDER BY Name");
+			
+			st.setInt(1, department.getId());
+			rs = st.executeQuery();
+			
+			//Como pode haver varios retornos usaremos list;
+			List<Seller> list = new ArrayList<>();
+			
+			//Usaremos Map para controlar a não repetição do departamento para não o incluir 
+			//mais de uma vez;
+			Map<Integer, Department> map = new HashMap<>();//Map chave, valor
+			
+			while(rs.next()) {
+				//dep recebe a veririfação de map e
+				Department dep = map.get(rs.getInt("DepartmentId"));
+				
+				//Se for null ele permite a inclusção do Departamento;
+				if(dep == null) {
+					dep = instantiateDepartment(rs);
+					map.put(rs.getInt("DepartmentId"), dep);
+				}
+				
+				//Caso ele já tenha sido preenchido ele apenas lança o Seller reaproveitando o dep;
+				Seller obj = instantialteSeller(rs, dep);
+				list.add(obj);
+			}
+			return list;
+			
+		}catch(SQLException e) {
+			throw new DbException(e.getMessage());
+		}
+		finally {
+			DB.closeResultSet(rs);
+			DB.closeStatement(st);
+		}
 	}
 }
