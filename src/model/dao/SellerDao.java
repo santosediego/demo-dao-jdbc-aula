@@ -6,7 +6,7 @@ import model.entities.Seller;
 
 public interface SellerDao {
 
-	void isnert(Seller obj);
+	void insert(Seller obj);
 	void update(Seller obj);
 	void deleteById(Seller obj);
 	Seller findById(Integer id);
