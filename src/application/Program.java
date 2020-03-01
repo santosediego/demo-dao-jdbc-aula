@@ -11,13 +11,12 @@ public class Program {
 		
 		SellerDao sellerDao = DaoFactory.createSellerDao();
 		
+		System.out.println("-- Test 1: seller findById --");
 						//Interface
 		Seller seller = sellerDao.findById(3);
-		
 		System.out.println(seller);
 		
 		DB.closeConnection();
-		
 		System.out.println("\nTudo posso Naquele que me Fortalece!!");
 	}
 }
