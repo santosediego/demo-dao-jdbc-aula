@@ -6,7 +6,6 @@ import java.util.Scanner;
 import db.DB;
 import model.dao.DaoFactory;
 import model.dao.DepartmentDao;
-import model.dao.impl.DepartmentDaoJDBC;
 import model.entities.Department;
 
 public class Program2 {

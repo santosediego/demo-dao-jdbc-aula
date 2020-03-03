@@ -28,17 +28,17 @@ public class DepartmentDaoJDBC implements DepartmentDao{
 		
 		try {
 			st = conn.prepareStatement("insert into department (Name) "
-					+ "values (?)", Statement.RETURN_GENERATED_KEYS);
+					+ "values (?)", Statement.RETURN_GENERATED_KEYS);//retorna a linha inserida;
 			
 			st.setString(1, obj.getName());
 			
 			int rows = st.executeUpdate();
 			
 			if(rows > 0) {
-				ResultSet rs = st.getGeneratedKeys();
+				ResultSet rs = st.getGeneratedKeys();//colhe a linha inserida;
 				if(rs.next()) {
-					int id = rs.getInt(1);
-					obj.setId(id);
+					int id = rs.getInt(1);//Seta essa nova linha no registro inserido 
+					obj.setId(id);//sem ter que busca-lo;
 				}
 				DB.closeResultSet(rs);
 			}else {
